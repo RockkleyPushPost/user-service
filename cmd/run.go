@@ -6,18 +6,21 @@ import (
 	"os"
 	"os/signal"
 	"pushpost/internal/config"
+	"pushpost/internal/services/user_service/entity"
 	"pushpost/internal/services/user_service/service"
 	"pushpost/internal/setup"
 	"pushpost/pkg/di"
+	lg "pushpost/pkg/logger"
 	"syscall"
 )
+
+const ServiceName = "user-service"
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	logger := initLogger()
-
+	logger := lg.InitLogger(ServiceName)
 	cfg, err := config.LoadYamlConfig("configs/development.yaml")
 
 	if err != nil {
@@ -27,9 +30,20 @@ func main() {
 
 	server := setup.NewFiber()
 
+	db, err := setup.Database(cfg.Database)
+
+	if err != nil {
+
+		logger.Fatal(err)
+	}
+
+	db.AutoMigrate(&entity.User{})
+	db.AutoMigrate(&entity.Friendship{})
+	db.AutoMigrate(&entity.FriendshipRequest{})
+
 	DI := di.NewDI(server, cfg.JwtSecret)
 
-	err = service.Setup(DI, server, cfg)
+	err = service.Setup(DI, server, db, cfg)
 
 	if err != nil {
 
@@ -52,10 +66,6 @@ func main() {
 
 	logger.Fatal(srv.Run(ctx))
 
-}
-
-func initLogger() *log.Logger {
-	return log.New(os.Stdout, "[USER-SERVICE] ", log.LstdFlags)
 }
 
 func handleShutdown(ctx context.Context, cancel context.CancelFunc, srv service.Service, logger *log.Logger) {
