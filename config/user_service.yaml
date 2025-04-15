@@ -1,0 +1,17 @@
+database:
+  host: "postgres"
+  port: 5432
+  user: "postgres"
+  password: "pushword"
+  db_name: "pushpost_user"
+  schema: "public"
+
+server:
+  address: "0.0.0.0"
+
+fiber:
+  app_name: "PushPost User-Service"
+  port: 8080
+
+
+jwt_secret: "pushpost"
