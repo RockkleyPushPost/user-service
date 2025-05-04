@@ -2,29 +2,25 @@ package main
 
 import (
 	"context"
-	"github.com/ansrivas/fiberprometheus/v2"
+	"github.com/RockkleyPushPost/common/config"
+	"github.com/RockkleyPushPost/common/di"
+	lg "github.com/RockkleyPushPost/common/logger"
+	"github.com/RockkleyPushPost/common/setup"
+	"github.com/RockkleyPushPost/user-service/service"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"log"
 	"os"
 	"os/signal"
-	"pushpost/internal/config"
-	"pushpost/internal/services/user_service/service"
-	"pushpost/internal/setup"
-	"pushpost/pkg/di"
-	lg "pushpost/pkg/logger"
 	"syscall"
 )
-
-const ServiceName = "user-service"
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	logger := lg.InitLogger(ServiceName)
-
 	cfg, err := config.LoadYamlConfig(os.Getenv("USER_SERVICE_CONFIG_PATH"))
+	logger := lg.InitLogger(cfg.AppName)
 
 	if err != nil {
 

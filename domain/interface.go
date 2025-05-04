@@ -1,18 +1,10 @@
 package domain
 
 import (
+	"github.com/RockkleyPushPost/user-service/domain/dto"
+	"github.com/RockkleyPushPost/user-service/entity"
 	"github.com/google/uuid"
-	"pushpost/internal/services/user_service/domain/dto"
-	"pushpost/internal/services/user_service/entity"
 )
-
-type AuthUseCase interface {
-	RegisterUser(dto *dto.RegisterUserDTO) (err error)
-	Login(dto dto.UserLoginDTO) (string, error)
-	IsEmailVerified(email string) (bool, error)
-	SendNewOTP(email string) error
-	VerifyEmailOTP(otp, email string) (bool, error)
-}
 
 type UserUseCase interface {
 	GetByUUID(uuid uuid.UUID) (*entity.User, error)

@@ -3,15 +3,15 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	"github.com/RockkleyPushPost/common/email"
+	"github.com/RockkleyPushPost/common/jwt"
+	"github.com/RockkleyPushPost/common/utils"
+	"github.com/RockkleyPushPost/user-service/domain"
+	"github.com/RockkleyPushPost/user-service/domain/dto"
+	"github.com/RockkleyPushPost/user-service/entity"
+	"github.com/RockkleyPushPost/user-service/storage"
 	"golang.org/x/crypto/bcrypt"
 	"log"
-	"pushpost/internal/services/user_service/domain"
-	"pushpost/internal/services/user_service/domain/dto"
-	"pushpost/internal/services/user_service/entity"
-	"pushpost/internal/services/user_service/storage"
-	"pushpost/pkg/email"
-	"pushpost/pkg/jwt"
-	"pushpost/pkg/utils"
 	"time"
 )
 

@@ -2,12 +2,12 @@ package usecase
 
 import (
 	"errors"
+	"github.com/RockkleyPushPost/common/jwt"
+	"github.com/RockkleyPushPost/user-service/domain"
+	"github.com/RockkleyPushPost/user-service/domain/dto"
+	"github.com/RockkleyPushPost/user-service/entity"
+	"github.com/RockkleyPushPost/user-service/storage"
 	"github.com/google/uuid"
-	"pushpost/internal/services/user_service/domain"
-	"pushpost/internal/services/user_service/domain/dto"
-	"pushpost/internal/services/user_service/entity"
-	"pushpost/internal/services/user_service/storage"
-	"pushpost/pkg/jwt"
 )
 
 //type FriendRequestStatus string

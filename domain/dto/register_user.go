@@ -21,14 +21,14 @@ const (
 // CheckList is used to construct informative messages if the data is not valid
 type CheckList map[string]bool
 
-type RegisterUserDTO struct {
+type CreateUserDTO struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`
 	Email    string `json:"email"`
 	Age      uint   `json:"age"`
 }
 
-func (dto *RegisterUserDTO) Validate() error {
+func (dto *CreateUserDTO) Validate() error {
 	dto.Name = strings.TrimSpace(dto.Name)
 	dto.Email = strings.TrimSpace(dto.Email)
 	dto.Password = strings.TrimSpace(dto.Password)
@@ -46,7 +46,7 @@ func (dto *RegisterUserDTO) Validate() error {
 	return nil
 }
 
-func validateUserData(data RegisterUserDTO) (bool, string) {
+func validateUserData(data CreateUserDTO) (bool, string) {
 	check := checkUserData(data)
 
 	dataMissingRequirements := make([]string, 0, len(*check))
@@ -84,7 +84,7 @@ func validatePassword(password string) (bool, string) {
 
 	return true, ""
 }
-func checkUserData(dto RegisterUserDTO) *CheckList {
+func checkUserData(dto CreateUserDTO) *CheckList {
 	nameLen := utf8.RuneCountInString(dto.Name)
 	nameLengthMsg := fmt.Sprintf("name must be from %d to %d characters long", MinNameLength, MaxNameLength)
 	ageMsg := fmt.Sprintf("age must be from %d to %d", MinAge, MaxAge)
