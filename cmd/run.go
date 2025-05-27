@@ -20,14 +20,13 @@ func main() {
 	defer cancel()
 
 	cfg, err := config.LoadYamlConfig(os.Getenv("USER_SERVICE_CONFIG_PATH"))
-	logger := lg.InitLogger(cfg.ServiceName)
 
 	if err != nil {
-
-		logger.Fatal("failed to load config: ", err)
+		log.Fatal("failed to load config: ", err)
 	}
 
-	server := setup.NewFiber(fiber.Config{}, cors.Config{})
+	logger := lg.InitLogger(cfg.ServiceName)
+	server := setup.NewFiber(fiber.Config{}, cors.Config{}) // fixme
 
 	// PROMETHEUS
 	fiberPrometheus := fiberprometheus.New(ServiceName)
