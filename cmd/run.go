@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/RockkleyPushPost/common/config"
+	"github.com/RockkleyPushPost/common/database"
 	"github.com/RockkleyPushPost/common/di"
 	lg "github.com/RockkleyPushPost/common/logger"
 	"github.com/RockkleyPushPost/common/setup"
@@ -33,7 +34,7 @@ func main() {
 	fiberPrometheus.RegisterAt(server, "/metrics")
 	server.Use(fiberPrometheus.Middleware)
 
-	db, err := setup.Database(cfg.Database)
+	db, err := database.NewDatabase(*cfg.Database)
 
 	if err != nil {
 
