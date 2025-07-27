@@ -7,6 +7,7 @@ import (
 	"github.com/RockkleyPushPost/common/di"
 	lg "github.com/RockkleyPushPost/common/logger"
 	"github.com/RockkleyPushPost/common/setup"
+	"github.com/RockkleyPushPost/user-service/internal/metrics"
 	"github.com/RockkleyPushPost/user-service/service"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -17,23 +18,27 @@ import (
 )
 
 func main() {
+	// Context
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	// Config
 	cfg, err := config.LoadYamlConfig(os.Getenv("USER_SERVICE_CONFIG_PATH"))
 
 	if err != nil {
 		log.Fatal("failed to load config: ", err)
 	}
 
+	// Logger
 	logger := lg.InitLogger(cfg.ServiceName)
-	server := setup.NewFiber(fiber.Config{}, cors.Config{}) // fixme
 
-	// PROMETHEUS
-	fiberPrometheus := fiberprometheus.New(ServiceName)
-	fiberPrometheus.RegisterAt(server, "/metrics")
-	server.Use(fiberPrometheus.Middleware)
+	// Server
+	app := setup.NewFiber(fiber.Config{}, cors.Config{}) // fixme
 
+	// Prometheus
+	metrics.Init(app, cfg.ServiceName)
+
+	// Database
 	db, err := database.NewDatabase(*cfg.Database)
 
 	if err != nil {
@@ -45,9 +50,10 @@ func main() {
 	//db.AutoMigrate(&entity.Friendship{})
 	//db.AutoMigrate(&entity.FriendshipRequest{})
 
-	DI := di.NewDI(server, cfg.JwtSecret)
+	// DI
+	DI := di.NewDI(app, cfg.JwtSecret)
 
-	err = service.Setup(DI, server, db, cfg)
+	err = service.Setup(DI, app, db, cfg)
 
 	if err != nil {
 
@@ -58,7 +64,7 @@ func main() {
 		service.WithConfig(cfg),
 		service.WithDI(DI),
 		service.WithLogger(logger),
-		service.WithServer(server),
+		service.WithServer(app),
 	)
 
 	if err != nil {
